@@ -1,4 +1,4 @@
-const VERSION = "niya-v2";
+const VERSION = "niya-v3";
 const ASSETS = [
   "./",
   "./index.html",

@@ -273,7 +273,7 @@ function pointerDown(event) {
   const shaped = ["line", "rect", "ellipse", "heart", "star", "poly", "gradient"].includes(state.tool);
   gesture = { start: point, last: point, moved: false, shape: shaped, stroke: beginStroke(), smooth: null, eraseTarget: sampleColor(activeLayer(state.doc), point.x, point.y) };
   if (currentIsEraserColor()) gesture.eraseTarget = [gesture.eraseTarget.r, gesture.eraseTarget.g, gesture.eraseTarget.b];
-  if (!shaped && state.tool !== "text") {
+  if (!shaped && state.tool !== "text" && event.pointerType !== "touch") {
     gesture.timer = setTimeout(() => { if (gesture && !gesture.moved) gesture.shape = true; }, 520);
   }
   if (state.tool === "text") { gesture = null; askText(point); }
@@ -1235,8 +1235,12 @@ async function useFile(file) {
   }
 }
 function bind() {
-  overlay.addEventListener("pointerdown", pointerDown);
-  overlay.addEventListener("pointermove", pointerMove);
+  const drawEvent = (handler) => (event) => {
+    if (event.cancelable) event.preventDefault();
+    handler(event);
+  };
+  overlay.addEventListener("pointerdown", drawEvent(pointerDown), { passive: false });
+  overlay.addEventListener("pointermove", drawEvent(pointerMove), { passive: false });
   overlay.addEventListener("pointerup", pointerUp);
   overlay.addEventListener("pointercancel", pointerUp);
   stage.addEventListener("wheel", (event) => {

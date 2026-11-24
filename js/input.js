@@ -11,8 +11,7 @@ export function docPoint(event, rect, cam) {
 export function palmRejected(event, penAt) {
   const now = performance.now();
   if (event.pointerType === "pen") return { reject: false, penAt: now };
-  if (event.pointerType === "touch" && now - penAt < 900) return { reject: true, penAt };
-  if (event.pointerType === "touch" && event.width > 40 && event.height > 40) return { reject: true, penAt };
+  if (event.pointerType === "touch" && penAt > 0 && now - penAt < 900) return { reject: true, penAt };
   return { reject: false, penAt };
 }
 
